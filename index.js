@@ -1,6 +1,6 @@
 let shoppingitems = [];
 
-const STORE = [ {name: "apples", checked: false}, {name: "oranges", checked: false}, {name: "milk", checked: true}, {name: "bread", checked: false} ];
+let STORE = [ {name: "apples", checked: false}, {name: "oranges", checked: false}, {name: "milk", checked: true}, {name: "bread", checked: false} ];
 
 
 function renderShoppingList()
@@ -46,26 +46,24 @@ function handleNewItemSubmit()
 
 }
 
-function handleItemCheckClicked()
+function handleItemCheckClicked(clickType, name)
 {
-    
-
-
-
+    const found =  STORE.find((item) => item.name === name);
+    found.checked = !found.checked;
+    renderShoppingList();
 }
 
-function handleDeleteItemClicked()
+function handleDeleteItemClicked(name)
 {
-
+    STORE = STORE.filter((item) => item.name !== name);
+    renderShoppingList();
 }
 
 
-
-
-$(handleShoppingList);
 
 $(function () {
     $('#js-shopping-list-form').submit(event => {
+        event.preventDefault();
         handleNewItemSubmit(event);
     })
 });
@@ -73,32 +71,16 @@ $(function () {
 
 
 $(function () {
-    $('.shopping-list').on( "click", ".shopping-item-toggle", function(event) {
-
-        
-     //   handleItemCheckClicked(event.currentTarget.outerText, $( this ).parent().siblings().val());
-        console.log($( this ).closest('.shopping-item').val());
-        if (event.currentTarget.outerText==='check')
-        {
-            $( this ).parent().siblings().addClass('shopping-item__checked');
-        } else{
-            $( this ).parent().siblings().removeClass('shopping-item__checked');     
-        }
-          if (event.currentTarget.outerText==='check')
-          {
-            $( this ).text('uncheck');
-          } else
-          {
-            $( this ).text('check');
-          }
-
+    $('.shopping-list').on( "click", ".shopping-item-toggle", function(event) {   
+       handleItemCheckClicked(event.currentTarget.outerText, $( this ).parent().siblings().text());
       });
 });
 
 $(function () {
     $('.shopping-list').on( "click", ".shopping-item-delete", function() {
-        $( this )
-        .closest( "li" ).remove();
+        handleDeleteItemClicked($( this ).parent().siblings().text());
         
       });
 });
+
+$(renderShoppingList);
